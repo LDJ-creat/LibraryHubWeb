@@ -11,9 +11,9 @@ async function handleResponse<T>(response: Response): Promise<T> {
     let errorData;
     try {
       errorData = await response.json();
-    } catch (e: unknown) {
-      // 如果响应体不是JSON，或者解析失败,则捕获错误
-      errorData = { message: response.statusText + (typeof e === 'object' && e !== null && 'toString' in e ? (e as { toString: () => string }).toString() : String(e)) };
+    } catch {
+      // 如果解析失败，尝试从statusText获取错误信息
+      errorData = { message: response.statusText || 'Failed to parse error response' };
     }
 
     if (response.status === 401) {
@@ -25,9 +25,9 @@ async function handleResponse<T>(response: Response): Promise<T> {
     throw new ApiError(errorData?.message || 'An API error occurred', response.status, errorData);
   }
 
-  // 如果响应成功，但内容为空 (例如 204 No Content)
+  // If response is successful but empty (e.g., 204 No Content)
   if (response.status === 204 || response.headers.get('Content-Length') === '0') {
-    return null as T; 
+    return undefined as T; 
   }
 
   return response.json() as Promise<T>;
@@ -48,11 +48,10 @@ export async function get<T>(path: string, options?: RequestOptions): Promise<T>
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...fetchOptions,
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(token),
-      ...fetchOptions?.headers,
-    },
+headers: {
+     ...getAuthHeaders(token),
+     ...fetchOptions?.headers,
+   },
   });
   return handleResponse<T>(response);
 }
@@ -93,7 +92,6 @@ export async function del<T>(path: string, options?: RequestOptions): Promise<T>
     ...fetchOptions,
     method: 'DELETE',
     headers: {
-      'Content-Type': 'application/json',
       ...getAuthHeaders(token),
       ...fetchOptions?.headers,
     },
