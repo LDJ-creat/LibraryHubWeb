@@ -1,3 +1,4 @@
+declare module 'daisyui'
 import 'tailwindcss/types/config';
 
 declare module 'tailwindcss/types/config' {

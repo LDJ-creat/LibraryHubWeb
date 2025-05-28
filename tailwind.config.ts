@@ -22,7 +22,7 @@ const config: Config = {
     daisyui,
   ],
   daisyui: {
-    themes: [], // Specify themes if you want to use DaisyUI themes
+    themes: [], 
   },
 };
 export default config;
