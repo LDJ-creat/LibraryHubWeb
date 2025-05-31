@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, FormEvent } from 'react';
-import Link from 'next/link';
-import { post } from '@/lib/apiClient'; 
-import { useRouter } from 'next/navigation';
+import React, { useState, FormEvent,useEffect } from 'react';
+import { get, post } from '@/lib/apiClient';
+import { UserProfile, LoginRequestBody } from '@/types/auth';
 import { ApiError } from '@/lib/errors';
+import { toast } from 'react-hot-toast';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore'; // 导入Zustand store
-import { LoginRequestBody, UserProfile } from '@/types/auth'; 
-import { toast } from 'react-toastify';
 
 export default function SignInPage() {
   const [username, setUsername] = useState('');
@@ -15,7 +15,28 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { setUser } = useAuthStore(); // 获取Zustand的setUser方法
+  const { setUser, setCsrfToken } = useAuthStore(); // 获取Zustand的setUser和setCsrfToken方法
+
+  useEffect(() => {
+    const fetchCsrfToken = async () => { // Make the inner function async
+      try {
+        // Assuming your get function returns a Promise that resolves to { tokenValue: string }
+        const result = await get<{ tokenValue: string }>('/auth/csrf-token'); 
+        if (result && result.tokenValue) {
+          setCsrfToken(result.tokenValue);
+          console.log('CSRF token fetched successfully and stored in Zustand.');
+        } else {
+          console.error('Failed to fetch CSRF token: Invalid response format.');
+          // Optionally set an error state here to inform the user
+        }
+      } catch (err) {
+        console.error('Failed to fetch CSRF token:', err);
+        // Optionally set an error state here to inform the user
+      }
+    };
+
+    fetchCsrfToken();
+  }, [setCsrfToken]); // Add setCsrfToken to dependency array
 
   const handleSignIn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
