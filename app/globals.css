@@ -24,3 +24,114 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 文本编辑器及markdown解析器字体样式 */
+.prose h1 {
+  font-size: 2.25rem;
+  margin-bottom: 0.75em;
+  line-height: 1.2;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  margin-bottom: 0.7em;
+  line-height: 1.2;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.65em;
+  line-height: 1.2;
+}
+
+.prose h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.6em;
+  line-height: 1.2;
+}
+
+.prose h5 {
+  font-size: 1.125rem;
+  margin-bottom: 0.55em;
+  line-height: 1.2;
+}
+
+.prose h6 {
+  font-size: 1rem;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+/* 自定义 MDXEditor 图片上传对话框样式 */
+
+/* 对话框整体布局调整 */
+.mdxeditor-popup-container div[role="dialog"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important; /* 确保内部文本也居中 */
+}
+
+/* 如果 "Upload an image" 是一个标题元素，例如 h3 */
+.mdxeditor-popup-container div[role="dialog"] > h3, /* 假设标题是 h3 */
+.mdxeditor-popup-container div[role="dialog"] > .mdxeditor-dialog-title /* 或者使用编辑器可能有的特定标题类名 */
+{
+  width: 100% !important; /* 确保标题占满宽度以便文本居中 */
+  text-align: center !important;
+  margin-bottom: 15px !important;
+}
+
+/* 表单本身也需要调整以适应新的flex布局 */
+.mdxeditor-popup-container div[role="dialog"] form {
+  width: 100% !important; /* 让表单占满对话框宽度 */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.mdxeditor-popup-container div[role="dialog"] form > div:nth-child(3), /* 隐藏 Alt 输入框容器 */
+.mdxeditor-popup-container div[role="dialog"] form > div:nth-child(4)  /* 隐藏 Title 输入框容器 */
+{
+  display: none !important;
+}
+
+/* 突出显示文件上传区域 */
+.mdxeditor-popup-container div[role="dialog"] form > div:nth-child(1) {
+  padding: 15px !important; /* 增加内边距 */
+  border: 1px dashed #ccc !important;
+  margin-bottom: 15px !important;
+  border-radius: 8px !important; /* 更圆润的边角 */
+  width: 90% !important; /* 调整宽度 */
+  box-sizing: border-box !important; /* 确保 padding 和 border 不会增加总宽度 */
+}
+
+/* 突出显示 URL 输入区域 */
+.mdxeditor-popup-container div[role="dialog"] form > div:nth-child(2) {
+  padding: 15px !important; /* 增加内边距 */
+  border: 1px dashed #ccc !important;
+  margin-bottom: 15px !important;
+  border-radius: 8px !important; /* 更圆润的边角 */
+  width: 90% !important; /* 调整宽度 */
+  box-sizing: border-box !important;
+}
+
+.mdxeditor-popup-container div[role="dialog"] form > div:nth-child(1) label,
+.mdxeditor-popup-container div[role="dialog"] form > div:nth-child(2) label {
+  font-weight: bold !important;
+  display: block !important;
+  margin-bottom: 10px !important; /* 增加标签下的间距 */
+  text-align: center !important; /* 标签文本居中 */
+}
+
+/* 调整按钮容器的间距和布局 */
+.mdxeditor-popup-container div[role="dialog"] form > div:last-child {
+    margin-top: 20px !important;
+    width: 90% !important; /* 使按钮容器宽度与输入区域一致 */
+    display: flex !important;
+    justify-content: center !important; /* 按钮居中 */
+}
+
+/* 调整按钮之间的间距 */
+.mdxeditor-popup-container div[role="dialog"] form > div:last-child button:not(:last-child) {
+    margin-right: 10px !important;
+}
