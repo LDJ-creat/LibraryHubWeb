@@ -10,6 +10,6 @@ export interface Recommendation{
 export interface Announcement {
     id: number;
     title: string;
-    publishedDate: Date;
-    cover: string;
+    updatedTime: string;
+    coverImage: string;
 }

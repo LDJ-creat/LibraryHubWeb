@@ -26,3 +26,12 @@ export interface Book {
     bookCopies: BookCopies[]; // 书籍副本信息
     reviews?: BookReview[]; // 书籍评论 (可选)
 }
+
+export interface BookSearchResult {
+    id: number;
+    title: string;
+    author: string;
+    publisher: string;
+    publishedDate: string;
+    cover: string;
+}

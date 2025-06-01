@@ -15,21 +15,36 @@ interface RequestOptions extends Omit<RequestInit, 'body' | 'method' | 'headers'
   headers?: Record<string, string>;
 }
 
-// // 辅助函数：从 document.cookie 中获取指定名称的 cookie 值
-// function getCookieValue(name: string): string | null {
-//   if (typeof document === 'undefined') { 
-//     return null;
-//   }
-//   const cookies = document.cookie.split(';');
-//   for (let i = 0; i < cookies.length; i++) {
-//     const cookie = cookies[i].trim();
-//     // 检查 cookie 是否以指定名称开头(XSRF-TOKEN=)
-//     if (cookie.startsWith(name + '=')) {
-//       return decodeURIComponent(cookie.substring(name.length + 1));
-//     }
-//   }
-//   return null;
-// }
+//私有辅助函数，用于获取和更新 CSRF 令牌
+async function ensureAndGetFreshCsrfToken(): Promise<string | null> {
+  const { setCsrfToken } = useAuthStore.getState();
+  try {
+    console.log('[apiClient.ensureAndGetFreshCsrfToken] Fetching new CSRF token via apiClient.get...');
+    // apiClient.get 会在其内部调用 handleResponse
+    // 后端 /auth/csrf-token 必须返回 ApiResponse<{ tokenValue: string }> 结构
+    const result = await get<{ tokenValue: string }>('/auth/csrf-token');
+
+    if (result && result.tokenValue) {
+      setCsrfToken(result.tokenValue);
+      console.log('[apiClient.ensureAndGetFreshCsrfToken] New CSRF token fetched and stored via apiClient.get:', result.tokenValue);
+      return result.tokenValue;
+    } else {
+      // 如果 handleResponse 确保成功时数据存在，或者 get 的类型 T 严格为 { tokenValue: string }，
+      // 那么这种情况可能不太常见。
+      // handleResponse 返回 apiResponse.data，所以如果 data 是 { tokenValue: "..." }，result 将是该对象。
+      console.error('[apiClient.ensureAndGetFreshCsrfToken] Failed to fetch CSRF token: Invalid data format from apiClient.get.', result);
+      return useAuthStore.getState().csrfToken; // 回退到 store 中现有的 token
+    }
+  } catch (error) {
+    // apiClient.get (通过 handleResponse) 应该已经处理/记录了错误，
+    // 并抛出了 ApiError 或类似的错误。
+    // get 函数本身也会记录错误。
+    console.error('[apiClient.ensureAndGetFreshCsrfToken] Error fetching new CSRF token via apiClient.get:', error);
+    // 为保持先前行为，此处返回现有 token。
+    return useAuthStore.getState().csrfToken; // 回退到 store 中现有的 token
+  }
+}
+
 
 async function handleResponse<T>(response: Response, url: string): Promise<T> { // Added url parameter
   console.log(`[apiClient.handleResponse] Processing response for ${url}. Status: ${response.status}, StatusText: ${response.statusText}`);
@@ -112,13 +127,13 @@ export async function get<T>(path: string, options?: RequestOptions, forwardedCo
 
 export async function post<T, U>(path: string, body: U, options?: RequestOptions, forwardedCookies?: string): Promise<T> {
   const fetchOptions = options || {};
-  const csrfToken = useAuthStore.getState().csrfToken;
+  const csrfToken = await ensureAndGetFreshCsrfToken(); // 获取最新的 CSRF token
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...fetchOptions?.headers,
   };
 
-  console.log('[apiClient.post] CSRF Token from Zustand:', csrfToken);
+  console.log('[apiClient.post] CSRF Token for request:', csrfToken);
   if (csrfToken) {
     headers['X-XSRF-TOKEN'] = csrfToken;
   }
@@ -140,7 +155,7 @@ export async function post<T, U>(path: string, body: U, options?: RequestOptions
 
 export async function put<T, U>(path: string, body: U, options?: RequestOptions, forwardedCookies?: string): Promise<T> {
   const fetchOptions = options || {};
-  const csrfToken = useAuthStore.getState().csrfToken;
+  const csrfToken = await ensureAndGetFreshCsrfToken(); // 获取最新的 CSRF token
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...fetchOptions?.headers,
@@ -166,7 +181,7 @@ export async function put<T, U>(path: string, body: U, options?: RequestOptions,
 
 export async function del<T>(path: string, options?: RequestOptions, forwardedCookies?: string): Promise<T> {
   const fetchOptions = options || {};
-  const csrfToken = useAuthStore.getState().csrfToken;
+  const csrfToken = await ensureAndGetFreshCsrfToken(); // 获取最新的 CSRF token
   const headers: Record<string, string> = {
     ...fetchOptions?.headers,
   };
@@ -198,17 +213,16 @@ export async function postFormData<T>(path: string, formData: FormData, options?
   let requestCredentials: RequestCredentials = 'include'; // Default for internal API calls
 
   if (path.startsWith('http://') || path.startsWith('https://')) {
-    url = path; //对于外部服务，保持完整的URL
-    requestCredentials = 'omit'; // Do not send credentials to external services like pngcdn.cn
-    // For FormData to external services, we typically don't set Content-Type; the browser does it with the correct boundary.
-    // Also, XSRF tokens are not for external services.
+    url = path; 
+    requestCredentials = 'omit'; 
+    // XSRF tokens are not for external services.
   } else {
     url = `${API_BASE_URL}${path}`; 
-    const csrfToken = useAuthStore.getState().csrfToken; 
+    const csrfToken = await ensureAndGetFreshCsrfToken(); // 获取最新的 CSRF token
     if (csrfToken) {
       headers['X-XSRF-TOKEN'] = csrfToken;
     }
-    if (forwardedCookies) { // For server-side rendering or specific scenarios with internal API
+    if (forwardedCookies) { 
        headers['Cookie'] = forwardedCookies;
        console.log('[apiClient.postFormData] Forwarding cookies for internal API:', forwardedCookies);
     }
