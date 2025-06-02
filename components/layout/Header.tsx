@@ -30,7 +30,6 @@ const Header = () => {
         </button>
         <Link href="/profile" passHref>
         <button aria-label="User Profile">
-          {/* <Link href="/profile" passHref> */}
             <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-slate-800 transition-colors pointer-events-none">account_circle</span>
           <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-neutral-200 hover:border-slate-400 transition-colors" style={{backgroundImage: 'url("/avatar.png")'}}></div>
         </button>
