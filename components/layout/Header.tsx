@@ -28,9 +28,13 @@ const Header = () => {
         <button aria-label="Notifications" className="flex items-center justify-center rounded-full h-10 w-10 bg-neutral-100 hover:bg-neutral-200 text-slate-700 hover:text-slate-900 transition-colors">
           <span className="material-icons text-2xl">notifications</span>
         </button>
+        <Link href="/profile" passHref>
         <button aria-label="User Profile">
+          {/* <Link href="/profile" passHref> */}
+            <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-slate-800 transition-colors pointer-events-none">account_circle</span>
           <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-neutral-200 hover:border-slate-400 transition-colors" style={{backgroundImage: 'url("/avatar.png")'}}></div>
         </button>
+        </Link>
       </div>
     </header>
   );
