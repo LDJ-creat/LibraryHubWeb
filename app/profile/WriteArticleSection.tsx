@@ -195,7 +195,8 @@ export default function PublishArticlePage() {
       await post('/articles/new', articleData);
       
       toast.success('Article published successfully!');
-      router.push('/'); // Or to the new article's page
+      router.refresh(); // 添加此行以刷新服务器数据
+      router.push('/'); // 然后跳转到首页
     } catch (err: unknown) {
       console.error('Error publishing article:', err);
       const finalError = err instanceof Error ? err.message : 'Failed to publish article.';

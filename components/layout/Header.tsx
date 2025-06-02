@@ -12,7 +12,7 @@ const Header = () => {
         <nav className="flex items-center gap-8">
           <Link className="text-slate-700 hover:text-slate-900 text-base font-medium leading-normal transition-colors" href="/">主页</Link>
           <Link className="text-slate-700 hover:text-slate-900 text-base font-medium leading-normal transition-colors" href="/categories">分类</Link>
-          <Link className="text-slate-700 hover:text-slate-900 text-base font-medium leading-normal transition-colors" href="/rankings">排行榜</Link>
+          <Link className="text-slate-700 hover:text-slate-900 text-base font-medium leading-normal transition-colors" href="/ranking">排行榜</Link>
         </nav>
       </div>
       <div className="flex items-center gap-4">

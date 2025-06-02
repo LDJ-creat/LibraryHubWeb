@@ -5,6 +5,7 @@ import Image from 'next/image';
 import useAuthStore from '@/store/authStore';
 import { get, post } from '@/lib/apiClient'; // Added post
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation'; // 确保导入 useRouter
 
 interface UserProfileData {
   id: number;
@@ -16,7 +17,8 @@ interface UserProfileData {
 }
 
 export default function UserProfileSection() {
-  const { isAuthenticated, setUser: setAuthUser, user: authUser } = useAuthStore(); 
+  const { isAuthenticated, setUser: setAuthUser, user: authUser, clearAuth } = useAuthStore(); // 添加 clearAuth
+  const router = useRouter(); // 初始化 router
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,7 @@ export default function UserProfileSection() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // 新增退出登录加载状态
 
   const fetchUserProfile = async () => {
     setIsLoading(true);
@@ -113,6 +116,22 @@ export default function UserProfileSection() {
       toast.error(errorMessage);
     } finally {
       setIsUpdatingPassword(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await post('/auth/logout', {});
+      toast.success('已成功退出登录。');
+      clearAuth(); // 清除认证状态
+      router.push('/sign-in'); // 重定向到登录页
+    } catch (err: unknown) {
+      console.error('Failed to logout:', err);
+      const errorMessage = (err instanceof Error && err.message) ? err.message : '退出登录失败，请稍后再试。';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -261,6 +280,19 @@ export default function UserProfileSection() {
             </button>
           </form>
         </div>
+
+        {/* 退出登录 */}
+        <div className="mt-10 pt-8 border-t border-gray-200 max-w-xl">
+          <h3 className="text-xl font-semibold text-gray-700 mb-5">账户操作</h3>
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isLoggingOut ? '正在退出...' : '退出登录'}
+          </button>
+        </div>
+
       </div>
     </div>
   );

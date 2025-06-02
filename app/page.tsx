@@ -85,7 +85,7 @@ export default async function HomePage() {
             </section>
 
             <section>
-              <h2 className="text-slate-900 text-3xl font-bold leading-tight tracking-tight px-4 pb-6 pt-2">Popular Events &amp; Announcements</h2>
+              <h2 className="text-slate-900 text-3xl font-bold leading-tight tracking-tight px-4 pb-6 pt-2">通知/图书馆活动</h2>
               {announcements.length > 0 ? (
                 <div className="relative">
                   <div className="flex overflow-x-auto pb-6 [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
