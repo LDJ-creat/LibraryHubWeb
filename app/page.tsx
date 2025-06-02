@@ -72,7 +72,7 @@ export default async function HomePage() {
                           {rec.description}
                         </p>
                         <p className="text-neutral-500 text-base font-medium leading-normal pt-2">By {rec.author}</p>
-                        <Link href={`/book/${rec.bookId ?? rec.id}`} className="mt-4 self-start rounded-full bg-slate-800 px-6 py-3 text-base font-semibold text-white hover:bg-slate-700 transition-colors focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-slate-800">
+                        <Link href={`/book-detail/${rec.bookId ?? rec.id}`} className="mt-4 self-start rounded-full bg-slate-800 px-6 py-3 text-base font-semibold text-white hover:bg-slate-700 transition-colors focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-slate-800">
                           了解更多
                         </Link>
                       </div>

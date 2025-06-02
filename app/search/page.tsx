@@ -5,15 +5,21 @@ import Link from 'next/link';
 import Header from '../../components/layout/Header';
 import Image from 'next/image';
 import { Book } from '../../types/book';
-import {get} from '@/lib/apiClient'; 
+import {get,post} from '@/lib/apiClient'; 
 
-// 模拟后端 API 调用
+// 获取热门搜索
 const fetchHotBooks = async (): Promise<Book[]> => {
   return await get<Book[]>('/books/search/hot'); // 假设有一个 API 返回热门图书
 };
 
+// 根据关键词搜索图书 
 const searchBooksAPI = async (query: string): Promise<Book[]> => {
   return await get<Book[]>(`/books/search/keywords?q=${encodeURIComponent(query)}`);
+};
+
+//更新特定图书的搜索次数
+const updateBookSearchCount = async (bookId: number) => {
+  await post(`/books/search/count/${bookId}`,undefined);
 };
 
 export default function SearchPage() {
@@ -73,7 +79,7 @@ export default function SearchPage() {
   };
 
   const BookCard = ({ book }: { book: Book }) => (
-    <Link href={`/book/${book.id}`} key={book.id} className="block group">
+    <Link href={`/book/${book.id}`} key={book.id} className="block group" onClick={() => updateBookSearchCount(book.id)}>
       <div className="border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow bg-white flex flex-col h-full">
         {book.cover ? (
           <div className="relative w-full aspect-[6/7] sm:aspect-[7/8] md:aspect-[6/7]"> {/* 调整图片容器宽高比，使其更宽 */}
