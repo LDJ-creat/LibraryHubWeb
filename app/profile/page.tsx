@@ -10,8 +10,9 @@ import Image from 'next/image'; // 导入 Image 组件
 import OverdueRecordsSection from './OverdueRecordsSection'; // 导入新增组件
 import AddBookSection from './AddBookSection'; // 导入新增组件
 import AddAdminSection from './AddAdminSection'; // 导入新增组件
+import WriteArticleSection from './WriteArticleSection'; // 导入发布文章组件
 
-type Tab = 'profile' | 'history' | 'favorites' | 'overdue' | 'addBook' | 'addAdmin';
+type Tab = 'profile' | 'history' | 'favorites' | 'overdue' | 'addBook' | 'addAdmin' | 'writeArticle';
 
 // 为侧边栏项目定义接口，以包含图标
 interface SidebarItem {
@@ -32,6 +33,7 @@ export default function ProfilePage() {
     { id: 'overdue', label: '逾期记录查询', icon: 'warning', adminOnly: true },
     { id: 'addBook', label: '添加图书', icon: 'add_circle', adminOnly: true },
     { id: 'addAdmin', label: '添加管理员', icon: 'person_add', adminOnly: true },
+    { id: 'writeArticle', label: '发布通知/文章', icon: 'post_add', adminOnly: true },
   ];
 
   const renderContent = () => {
@@ -48,6 +50,8 @@ export default function ProfilePage() {
         return <AddBookSection />;
       case 'addAdmin': // 新增 case
         return <AddAdminSection />;
+      case 'writeArticle': // 新增 case
+        return <WriteArticleSection />;
       default:
         return <UserProfileSection />;
     }

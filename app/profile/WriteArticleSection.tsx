@@ -206,16 +206,15 @@ export default function PublishArticlePage() {
     }
   };
 
-  // JSX remains largely the same
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-3xl">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-neutral-900">
+    <div className="min-h-screen bg-neutral-50 flex flex-col py-12 sm:px-6 lg:px-8">
+      <div className="sm:w-full sm:max-w-5xl">
+        <h2 className="mt-6 text-3xl font-extrabold text-neutral-900">
           发布新通知/推文
         </h2>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-3xl">
+      <div className="mt-8 sm:w-full sm:max-w-5xl">
         <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (

@@ -79,7 +79,7 @@ export default function SearchPage() {
   };
 
   const BookCard = ({ book }: { book: Book }) => (
-    <Link href={`/book/${book.id}`} key={book.id} className="block group" onClick={() => updateBookSearchCount(book.id)}>
+    <Link href={`/book-detail/${book.id}`} key={book.id} className="block group" onClick={() => updateBookSearchCount(book.id)}>
       <div className="border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow bg-white flex flex-col h-full">
         {book.cover ? (
           <div className="relative w-full aspect-[6/7] sm:aspect-[7/8] md:aspect-[6/7]"> {/* 调整图片容器宽高比，使其更宽 */}
